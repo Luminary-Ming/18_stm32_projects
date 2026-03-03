@@ -1,0 +1,22 @@
+--cpu Cortex-M3
+"07_cubemx\startup_stm32f103xb.o"
+"07_cubemx\main.o"
+"07_cubemx\gpio.o"
+"07_cubemx\stm32f1xx_it.o"
+"07_cubemx\stm32f1xx_hal_msp.o"
+"07_cubemx\stm32f1xx_hal_gpio_ex.o"
+"07_cubemx\stm32f1xx_hal.o"
+"07_cubemx\stm32f1xx_hal_rcc.o"
+"07_cubemx\stm32f1xx_hal_rcc_ex.o"
+"07_cubemx\stm32f1xx_hal_gpio.o"
+"07_cubemx\stm32f1xx_hal_dma.o"
+"07_cubemx\stm32f1xx_hal_cortex.o"
+"07_cubemx\stm32f1xx_hal_pwr.o"
+"07_cubemx\stm32f1xx_hal_flash.o"
+"07_cubemx\stm32f1xx_hal_flash_ex.o"
+"07_cubemx\stm32f1xx_hal_exti.o"
+"07_cubemx\system_stm32f1xx.o"
+--strict --scatter "07_cubemx\07_cubemx.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "07_cubemx.map" -o 07_cubemx\07_cubemx.axf
