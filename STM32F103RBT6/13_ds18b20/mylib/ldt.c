@@ -9,6 +9,15 @@
 #define	HC595_LCLK PBOut(4)
 #define	HC595_DATA PBOut(3)
 
+// 全局编码表
+static const u8 ledcode[] = {
+    0x3f, 0x06, 0x5b, 0x4f, // 0 1 2 3
+    0x66, 0x6d, 0x7d, 0x07, // 4 5 6 7
+    0x7f, 0x6f, 0x77, 0x7c, // 8 9 A b
+    0x39, 0x5e, 0x79, 0x71, // c d E F
+    0x40, 0x00              // [16]是负号'-', [17]是全灭
+};
+
 // 初始化数码管使用的 GPIO 管脚
 void ldt_init(void)
 {
@@ -66,10 +75,6 @@ void hc595_send_data(u8 data)
 // 把形参的数字通过四位数码管显示
 void digit_show_data(int data)
 {
-	unsigned char ledcode[] = {0x3f,0x06,0x5b,0x4f,   // 0 1 2 3
-								0x66,0x6d,0x7d,0x07,  // 4 5 6 7
-								0x7f,0x6f,0x77,0x7c,  // 8 9 A b
-								0x39,0x5e,0x79,0x71}; // c d E F
 	u8 d[4] = {0};  // 存储四位数字的每一位
 	u8 i = 0;  // 循环变量
 	
@@ -87,4 +92,29 @@ void digit_show_data(int data)
 		hc595_send_data(0);  // 手动清空 74HC595 的寄存器
 	}
 }
+
+/**
+ * @brief 在指定位置显示一个数字，并选择是否点亮小数点
+ * @param pos      位置 (0-3)
+ * @param number   要显示的数字 (0-15), 16为负号, 17为灭
+ * @param show_dot 1:点亮小数点, 0:不亮
+ */
+void ldt_display(u8 pos, u8 number, u8 show_dot)
+{
+    u8 seg_code;
+    
+    if(number > 17) return;
+    
+    seg_code = ledcode[number];
+    
+    // 如果需要显示小数点，将第7位（DP）置1
+    if(show_dot) 
+        seg_code |= 0x80;
+    
+    hc138_out_data(pos);     // 选择位数
+    hc595_send_data(seg_code); // 发送段码
+    delay_ms(1);             // 扫描延时
+    hc595_send_data(0x00);   // 消隐，防止重影
+}
+
 
